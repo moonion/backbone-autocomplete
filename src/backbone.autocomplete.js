@@ -67,7 +67,9 @@ var AutoCompleteView = Backbone.View.extend({
         this.input
             .keyup(_.bind(this.keyup, this))
             .keydown(_.bind(this.keydown, this))
-            .after(this.$el);
+            .after(this.$el)
+            .blur($.proxy(this.blur, this))
+        ;
 
         return this;
     },
@@ -77,6 +79,10 @@ var AutoCompleteView = Backbone.View.extend({
         if (event.keyCode == 40) return this.move(+1);
         if (event.keyCode == 13) return this.onEnter();
         if (event.keyCode == 27) return this.hide();
+    },
+
+    blur: function() {
+        this.hide();
     },
 
     keyup: function () {
@@ -92,7 +98,7 @@ var AutoCompleteView = Backbone.View.extend({
     },
 
     filter: function (keyword) {
-    	var keyword = keyword.toLowerCase();
+        var keyword = keyword.toLowerCase();
         if (this.model.url) {
 
             var parameters = {};
