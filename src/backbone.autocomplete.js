@@ -12,10 +12,28 @@ var AutoCompleteItemView = Backbone.View.extend({
 
     render: function () {
         this.$el.html(this.template({
-            "label": this.model.label()
+            "label": this.highlight(this.model.label())
         }));
         return this;
     },
+    
+    highlight: function (label) {    // tkes, highlight keyword in result
+        var op = this.options.parent;
+        if (label && op.highlight && op.currentText) {
+            label = label.replace(
+                new RegExp(this.escapeRegExp(op.currentText), "gi"),
+                function (matched) {
+                    return '<b class="' + op.highlight + '">' + matched + '</b>'
+                }
+            );
+        }
+        return label;
+    },
+
+	escapeRegExp: function(str) {
+		// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
+		return String(str).replace(/([.*+?^${}()|\[\]\/\\])/g, "\\$1");
+	},
 
     select: function () {
         this.options.parent.hide().select(this.model);
@@ -33,6 +51,7 @@ var AutoCompleteView = Backbone.View.extend({
     minKeywordLength: 2,
     currentText: "",
     itemView: AutoCompleteItemView,
+    highlight: "",
 
     initialize: function (options) {
         _.extend(this, options);
@@ -68,6 +87,7 @@ var AutoCompleteView = Backbone.View.extend({
             } else {
                 this.hide()
             }
+            this.currentText = keyword; // tkes, moved here from loadResult
         }
     },
 
@@ -79,10 +99,14 @@ var AutoCompleteView = Backbone.View.extend({
             parameters[this.queryParameter] = keyword;
 
             this.model.fetch({
-                success: function () {
+                success: _.bind(function () { // tkes, _.bind instead of .bind()
                     this.loadResult(this.model.models, keyword);
-                }.bind(this),
-                data: parameters
+                }, this),
+                data: parameters,
+                // tkes, some more params
+                cache: (typeof this.model.cache != 'undefined') ? this.model.cache : undefined,
+                dataType: (this.model.datatype) ? this.model.datatype : undefined,
+                jsonpCallback: (this.model.callback) ? this.model.callback : undefined
             });
 
         } else {
@@ -117,7 +141,6 @@ var AutoCompleteView = Backbone.View.extend({
     },
 
     loadResult: function (model, keyword) {
-        this.currentText = keyword;
         this.show().reset();
         if (model.length) {
             _.forEach(model, this.addItem, this);
