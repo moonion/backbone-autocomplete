@@ -23,7 +23,7 @@ var AutoCompleteItemView = Backbone.View.extend({
             label = label.replace(
                 new RegExp(this.escapeRegExp(op.currentText), "gi"),
                 function (matched) {
-                    return '<b class="' + op.highlight + '">' + matched + '</b>'
+                    return $('<b>').addClass(op.highlight).html(matched);
                 }
             );
         }
