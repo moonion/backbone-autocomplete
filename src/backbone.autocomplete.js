@@ -55,7 +55,7 @@
 	
 	});
 	
-	var AutoCompleteView = Backbone.View.extend({
+	Backbone.AutoCompleteView = Backbone.View.extend({
 	    tagName: "ul",
 	    className: "autocomplete",
 	    wait: 300,
