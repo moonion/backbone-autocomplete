@@ -54,7 +54,7 @@
 	    }
 	
 	});
-	
+	//Правлено
 	Backbone.AutoCompleteView = Backbone.View.extend({
 	    tagName: "ul",
 	    className: "autocomplete",
