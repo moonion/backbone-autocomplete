@@ -80,9 +80,7 @@
 	        this.input
 	            .keyup(_.bind(this.keyup, this))
 	            .keydown(_.bind(this.keydown, this))
-	            .after(this.$el)
-	            .blur($.proxy(this.blur, this))
-	        ;
+	            .after(this.$el);
 	
 	        return this;
 	    },
@@ -93,11 +91,7 @@
 	        if (event.keyCode == 13) return this.onEnter();
 	        if (event.keyCode == 27) return this.hide();
 	    },
-	
-	    blur: function() {
-	        this.hide();
-	    },
-	
+
 	    keyup: function () {
 	        var keyword = this.input.val();
 	        if (this.isChanged(keyword)) {
